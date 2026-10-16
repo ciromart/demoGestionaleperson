@@ -15,12 +15,12 @@ export function Topbar({
         type="button"
         onClick={onMenuClick}
         aria-label="Apri menu di navigazione"
-        className="cursor-pointer rounded-lg border border-border p-2 text-slate-600 transition-colors hover:bg-muted lg:hidden"
+        className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-border text-slate-600 transition-colors hover:bg-muted lg:hidden"
       >
         <Menu size={18} />
       </button>
 
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <h1 className="truncate text-[17px] font-semibold tracking-tight text-foreground">
           {title}
         </h1>
@@ -39,7 +39,7 @@ export function Topbar({
 
       <div
         aria-hidden="true"
-        className="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-mono text-[13px] font-semibold text-on-primary"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary font-mono text-[13px] font-semibold text-on-primary"
       >
         CM
       </div>

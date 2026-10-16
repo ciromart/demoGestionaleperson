@@ -16,7 +16,13 @@ const NAV_ITEMS = [
   { to: "/impostazioni", label: "Impostazioni", icon: Settings, disabled: true },
 ];
 
-export function Sidebar({ className }: { className?: string }) {
+export function Sidebar({
+  className,
+  onNavigate,
+}: {
+  className?: string;
+  onNavigate?: () => void;
+}) {
   return (
     <aside
       className={clsx(
@@ -75,6 +81,7 @@ export function Sidebar({ className }: { className?: string }) {
               key={to}
               to={to}
               end={to === "/"}
+              onClick={onNavigate}
               className={({ isActive }) =>
                 clsx(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150",

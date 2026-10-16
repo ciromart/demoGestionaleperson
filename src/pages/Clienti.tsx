@@ -68,45 +68,57 @@ export function Clienti() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-5 p-4 sm:p-6">
-      <div className="flex flex-col gap-4 rounded-xl border border-border bg-surface p-5 shadow-card sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-[15px] font-semibold text-foreground">
-            Demo notifiche nuovi ordini
-          </h2>
-          <p className="mt-1 max-w-md text-[13px] text-muted-foreground">
-            Simula l'arrivo di 3 notifiche in tempo reale, una ogni 1,5 secondi, su
-            clienti scelti a caso dall'elenco qui sotto.
-          </p>
-        </div>
+    <div className="mx-auto max-w-6xl space-y-4 p-3 sm:space-y-5 sm:p-6">
+      {/* Demo card: si nasconde durante la demo per lasciare spazio alle notifiche */}
+      <div
+        className={clsx(
+          "grid transition-all duration-300 ease-out",
+          isRunning ? "grid-rows-[0fr] opacity-0" : "grid-rows-[1fr] opacity-100",
+        )}
+      >
+        <div className="overflow-hidden">
+          <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4 shadow-card sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5">
+            <div>
+              <h2 className="text-[15px] font-semibold text-foreground">
+                Demo notifiche nuovi ordini
+              </h2>
+              <p className="mt-1 max-w-md text-[13px] text-muted-foreground">
+                Simula l'arrivo di 3 notifiche in tempo reale, una ogni 1,5 secondi, su
+                clienti scelti a caso dall'elenco qui sotto.
+              </p>
+            </div>
 
-        <button
-          type="button"
-          onClick={startDemo}
-          disabled={isRunning}
-          className={clsx(
-            "flex min-w-[168px] cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold shadow-card transition-all duration-150",
-            isRunning
-              ? "cursor-not-allowed bg-blue-100 text-primary"
-              : "bg-primary text-on-primary hover:bg-primary-dark active:scale-[0.98]",
-          )}
-          aria-live="polite"
-        >
-          {isRunning ? (
-            <>
-              <Loader2 size={17} className="animate-spin" aria-hidden="true" />
-              Demo in corso… {completedSteps}/{DEMO_STEPS}
-            </>
-          ) : (
-            <>
+            <button
+              type="button"
+              onClick={startDemo}
+              disabled={isRunning}
+              className="flex w-full min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary shadow-card transition-all duration-150 hover:bg-primary-dark active:scale-[0.98] disabled:cursor-not-allowed sm:w-auto sm:min-w-[168px]"
+            >
               <PlayCircle size={18} aria-hidden="true" />
               Avvia Demo
-            </>
-          )}
-        </button>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border bg-surface shadow-card">
+      {/* Stato compatto mostrato al posto della card durante la demo */}
+      <div
+        className={clsx(
+          "grid transition-all duration-300 ease-out",
+          isRunning ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+        )}
+        aria-live="polite"
+      >
+        <div className="overflow-hidden">
+          <div className="flex items-center gap-2.5 rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold text-primary shadow-card">
+            <Loader2 size={17} className="shrink-0 animate-spin" aria-hidden="true" />
+            Demo in corso… ricezione notifica {completedSteps}/{DEMO_STEPS}
+          </div>
+        </div>
+      </div>
+
+      {/* Tabella — da sm in su */}
+      <div className="hidden overflow-hidden rounded-xl border border-border bg-surface shadow-card sm:block">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full min-w-[640px] border-collapse text-left">
             <thead>
@@ -170,6 +182,47 @@ export function Clienti() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Elenco a card — sotto sm, nessuno scroll orizzontale */}
+      <div className="space-y-2.5 sm:hidden">
+        {clienti.map((cliente) => (
+          <div
+            key={cliente.id}
+            className={clsx(
+              "rounded-xl border border-border bg-surface p-4 shadow-card transition-colors duration-300",
+              highlighted[cliente.id] && "bg-blue-50",
+            )}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <span className="flex items-start gap-2 text-[15px] font-semibold text-foreground">
+                <Building2
+                  size={16}
+                  className="mt-0.5 shrink-0 text-slate-400"
+                  aria-hidden="true"
+                />
+                {cliente.ragioneSociale}
+              </span>
+              <span
+                className={clsx(
+                  "shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize",
+                  STATO_STYLES[cliente.stato],
+                )}
+              >
+                {cliente.stato}
+              </span>
+            </div>
+            <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 pl-6 text-[13.5px] text-slate-600">
+              <span>
+                {cliente.nome} {cliente.cognome}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Phone size={13} className="text-slate-400" aria-hidden="true" />
+                {cliente.cellulare}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

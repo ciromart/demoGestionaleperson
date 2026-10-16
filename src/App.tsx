@@ -32,14 +32,14 @@ function AppShell() {
             aria-hidden="true"
           />
           <div className="relative flex h-full">
-            <Sidebar className="flex" />
+            <Sidebar className="flex" onNavigate={() => setMobileNavOpen(false)} />
             <button
               type="button"
               onClick={() => setMobileNavOpen(false)}
               aria-label="Chiudi menu"
-              className="absolute top-4 -right-11 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-surface text-slate-600 shadow-card"
+              className="absolute top-4 -right-12 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-surface text-slate-600 shadow-card"
             >
-              <X size={16} />
+              <X size={18} />
             </button>
           </div>
         </div>
