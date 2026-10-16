@@ -55,15 +55,70 @@ export function generaNotificaOrdini(cliente: Cliente): OrdineNotifica {
   return { cliente, numeroOrdini, date, messaggio };
 }
 
-/** Sceglie `count` clienti distinti a caso dalla lista (con ripetizione solo se necessario). */
-export function pickRandomClienti(clienti: Cliente[], count: number): Cliente[] {
-  if (clienti.length === 0) return [];
-  const pool = [...clienti];
-  const result: Cliente[] = [];
-  for (let i = 0; i < count; i += 1) {
-    if (pool.length === 0) pool.push(...clienti);
-    const index = randomInt(0, pool.length - 1);
-    result.push(pool.splice(index, 1)[0]);
+function shuffle<T>(items: T[]): T[] {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i -= 1) {
+    const j = randomInt(0, i);
+    [result[i], result[j]] = [result[j], result[i]];
   }
   return result;
+}
+
+/**
+ * Genera una sequenza di `count` clienti "sempre diversi": cicla la lista
+ * rimescolata, evitando ripetizioni consecutive quando un ciclo finisce e
+ * il successivo ricomincia.
+ */
+function buildClientSequence(clienti: Cliente[], count: number): Cliente[] {
+  if (clienti.length === 0) return [];
+  const sequence: Cliente[] = [];
+  while (sequence.length < count) {
+    const batch = shuffle(clienti);
+    const previous = sequence[sequence.length - 1];
+    if (previous && batch[0]?.id === previous.id && batch.length > 1) {
+      [batch[0], batch[1]] = [batch[1], batch[0]];
+    }
+    sequence.push(...batch);
+  }
+  return sequence.slice(0, count);
+}
+
+export interface DemoScheduleItem {
+  cliente: Cliente;
+  delayMs: number;
+}
+
+export interface DemoScheduleOptions {
+  /** Durata totale della demo, in millisecondi. */
+  totalDurationMs: number;
+  /** Numero di notifiche per gruppo. */
+  groupSize: number;
+  /** Intervallo tra una notifica e la successiva, all'interno di un gruppo. */
+  itemDelayMs: number;
+  /** Pausa aggiuntiva tra la fine di un gruppo e l'inizio del successivo. */
+  groupDelayMs: number;
+}
+
+/**
+ * Pianifica le notifiche della demo a gruppi: entro ogni gruppo le notifiche
+ * sono scaglionate di `itemDelayMs`, e tra un gruppo e il successivo c'è una
+ * pausa di `groupDelayMs`, per l'intera finestra `totalDurationMs`.
+ */
+export function buildDemoSchedule(
+  clienti: Cliente[],
+  { totalDurationMs, groupSize, itemDelayMs, groupDelayMs }: DemoScheduleOptions,
+): DemoScheduleItem[] {
+  const delays: number[] = [];
+  let groupStart = 0;
+  while (groupStart < totalDurationMs) {
+    for (let j = 0; j < groupSize; j += 1) {
+      const delay = groupStart + j * itemDelayMs;
+      if (delay >= totalDurationMs) break;
+      delays.push(delay);
+    }
+    groupStart += (groupSize - 1) * itemDelayMs + groupDelayMs;
+  }
+
+  const sequence = buildClientSequence(clienti, delays.length);
+  return delays.map((delayMs, i) => ({ delayMs, cliente: sequence[i] }));
 }

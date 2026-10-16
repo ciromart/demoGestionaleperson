@@ -3,7 +3,7 @@ import { PlayCircle, Phone, Building2, Loader2 } from "lucide-react";
 import clsx from "clsx";
 import { clienti } from "../data/clienti";
 import { useToast } from "../components/ToastProvider";
-import { generaNotificaOrdini, pickRandomClienti } from "../lib/demoOrdini";
+import { buildDemoSchedule, generaNotificaOrdini } from "../lib/demoOrdini";
 
 const STATO_STYLES: Record<string, string> = {
   attivo: "bg-[var(--color-success-bg)] text-success",
@@ -11,13 +11,21 @@ const STATO_STYLES: Record<string, string> = {
   sospeso: "bg-[var(--color-destructive-bg)] text-destructive",
 };
 
-const DEMO_STEPS = 3;
-const DEMO_DELAY_MS = 1500;
+// La demo invia notifiche per 30s, a gruppi di 3: 2s di distanza tra una
+// notifica e l'altra dello stesso gruppo, 2s di pausa tra un gruppo e il
+// successivo (per i valori scelti la cadenza risulta di fatto costante).
+const DEMO_SCHEDULE_OPTIONS = {
+  totalDurationMs: 30_000,
+  groupSize: 3,
+  itemDelayMs: 2_000,
+  groupDelayMs: 2_000,
+} as const;
 
 export function Clienti() {
   const { pushToast } = useToast();
   const [isRunning, setIsRunning] = useState(false);
   const [completedSteps, setCompletedSteps] = useState(0);
+  const [totalSteps, setTotalSteps] = useState(0);
   const [highlighted, setHighlighted] = useState<Record<string, boolean>>({});
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -34,9 +42,10 @@ export function Clienti() {
     timeoutsRef.current.forEach(clearTimeout);
     timeoutsRef.current = [];
 
-    const target = pickRandomClienti(clienti, DEMO_STEPS);
+    const schedule = buildDemoSchedule(clienti, DEMO_SCHEDULE_OPTIONS);
+    setTotalSteps(schedule.length);
 
-    target.forEach((cliente, index) => {
+    schedule.forEach(({ cliente, delayMs }, index) => {
       const timer = setTimeout(() => {
         const notifica = generaNotificaOrdini(cliente);
 
@@ -57,11 +66,11 @@ export function Clienti() {
         timeoutsRef.current.push(clearHighlight);
 
         setCompletedSteps(index + 1);
-        if (index === target.length - 1) {
+        if (index === schedule.length - 1) {
           const stopRunning = setTimeout(() => setIsRunning(false), 200);
           timeoutsRef.current.push(stopRunning);
         }
-      }, index * DEMO_DELAY_MS);
+      }, delayMs);
 
       timeoutsRef.current.push(timer);
     });
@@ -83,8 +92,9 @@ export function Clienti() {
                 Demo notifiche nuovi ordini
               </h2>
               <p className="mt-1 max-w-md text-[13px] text-muted-foreground">
-                Simula l'arrivo di 3 notifiche in tempo reale, una ogni 1,5 secondi, su
-                clienti scelti a caso dall'elenco qui sotto.
+                Simula per 30 secondi l'arrivo di notifiche in tempo reale, a gruppi di
+                3 ogni 2 secondi, su clienti sempre diversi scelti dall'elenco qui
+                sotto.
               </p>
             </div>
 
@@ -112,7 +122,7 @@ export function Clienti() {
         <div className="overflow-hidden">
           <div className="flex items-center gap-2.5 rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold text-primary shadow-card">
             <Loader2 size={17} className="shrink-0 animate-spin" aria-hidden="true" />
-            Demo in corso… ricezione notifica {completedSteps}/{DEMO_STEPS}
+            Demo in corso… ricezione notifica {completedSteps}/{totalSteps}
           </div>
         </div>
       </div>
