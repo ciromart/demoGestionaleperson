@@ -5,9 +5,10 @@ Web app gestionale (clienti, ordini) con palette blu/bianco, costruita con React
 ## Funzionalità
 
 - **Dashboard** — panoramica KPI (clienti attivi, ordini, fatturato, tempi di evasione).
-- **Clienti** — anagrafica clienti (ragione sociale, nome, cognome, cellulare, stato) con pulsante **"Avvia Demo"**: simula l'arrivo di 3 notifiche toast in tempo reale, scaglionate ogni 1,5 secondi, con il testo
+- **Clienti** — anagrafica clienti (ragione sociale, nome, cognome, cellulare, stato) con pulsante **"Avvia Demo"**: simula per 30 secondi l'arrivo di notifiche toast in tempo reale a gruppi di 3 (2s tra una notifica e l'altra, 2s tra un gruppo e il successivo), su clienti sempre diversi, con il testo
   `Il cliente <ragione sociale> ha inserito <N> ordini per il/i giorno/i <data/e>.`
 - Sidebar responsive, toast accessibili (`aria-live`), focus states, `prefers-reduced-motion` rispettato.
+- **PWA installabile**: manifest + service worker (via `vite-plugin-pwa`), icone per Android/iOS/desktop, funziona offline e supporta "Aggiungi a schermata Home" da browser mobile.
 
 ## Sviluppo
 
