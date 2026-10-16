@@ -10,6 +10,20 @@
       content="Nimbus Gestionale — gestione clienti, ordini e notifiche in tempo reale."
     />
     <title>Nimbus Gestionale</title>
+    <!--
+      Decodifica il redirect creato da public/404.html su GitHub Pages,
+      ripristinando l'URL reale (es. /demoGestionaleperson/clienti) prima
+      che React Router prenda il controllo.
+    -->
+    <script>
+      (function () {
+        var redirect = new URLSearchParams(window.location.search).get("redirect");
+        if (redirect) {
+          var base = window.location.pathname.replace(/\/$/, "");
+          window.history.replaceState(null, "", base + "/" + redirect);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

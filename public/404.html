@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Nimbus Gestionale</title>
+    <!--
+      GitHub Pages non gestisce il routing lato client: un refresh su
+      /demoGestionaleperson/clienti risulterebbe in un 404. Questo script
+      (pattern "spa-github-pages") ricodifica il percorso in querystring e
+      reindirizza alla index, che lo decodifica e ripristina l'URL reale.
+    -->
+    <script>
+      var segmentsToKeep = 1;
+      var l = window.location;
+      l.replace(
+        l.protocol +
+          "//" +
+          l.hostname +
+          (l.port ? ":" + l.port : "") +
+          l.pathname
+            .split("/")
+            .slice(0, 1 + segmentsToKeep)
+            .join("/") +
+          "/?redirect=" +
+          encodeURIComponent(
+            l.pathname
+              .split("/")
+              .slice(1 + segmentsToKeep)
+              .join("/") + l.search,
+          ) +
+          l.hash,
+      );
+    </script>
+  </head>
+  <body></body>
+</html>
