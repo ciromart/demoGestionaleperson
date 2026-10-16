@@ -1,0 +1,129 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;600&family=Inter:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Fira Code", ui-monospace, monospace;
+
+  --color-primary: #1e40af;
+  --color-primary-dark: #15337e;
+  --color-primary-light: #3b82f6;
+  --color-on-primary: #ffffff;
+
+  --color-secondary: #3b82f6;
+  --color-accent: #d97706;
+
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-foreground: #0f1b3d;
+  --color-muted: #e9eef6;
+  --color-muted-foreground: #475569;
+  --color-border: #dbeafe;
+
+  --color-success: #15803d;
+  --color-success-bg: #ecfdf3;
+  --color-destructive: #dc2626;
+  --color-destructive-bg: #fef2f2;
+  --color-ring: #1e40af;
+
+  --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 3px 0 rgb(30 64 175 / 0.06);
+  --shadow-card-hover: 0 4px 10px -2px rgb(30 64 175 / 0.1), 0 2px 6px -2px rgb(30 64 175 / 0.08);
+  --shadow-toast: 0 12px 28px -6px rgb(15 23 42 / 0.18), 0 4px 10px -4px rgb(30 64 175 / 0.12);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -12px, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes toast-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    max-height: 120px;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0) scale(0.96);
+    max-height: 0;
+  }
+}
+
+@keyframes toast-progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-toast-out {
+  animation: toast-out 220ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+.animate-toast-progress {
+  animation: toast-progress linear both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-toast-in,
+  .animate-toast-out,
+  .animate-toast-progress {
+    animation: none !important;
+  }
+}

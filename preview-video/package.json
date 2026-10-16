@@ -1,0 +1,20 @@
+{
+  "name": "preview-video",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "render": "remotion render src/index.ts NimbusPreview out/nimbus-preview.mp4",
+    "still": "remotion still src/index.ts NimbusPreview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@remotion/cli": "^4.0.536",
+    "@remotion/google-fonts": "^4.0.536",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "^4.0.536"
+  }
+}
